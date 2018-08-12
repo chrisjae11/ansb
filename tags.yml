@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  tasks:
+   - name: tag1
+     debug: msg="hi from pro-{{inventory_hostname}}"
+     when: inventory_hostname in groups['production']
+     tags:
+       - production
+   - name: tag2
+     debug: msg="ola from dev-{{ansible_hostname}}"
+     when: inventory_hostname in groups['devops']
+     tags:
+      - devops

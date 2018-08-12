@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: true
+  remote_user: ansible
+  tasks:
+   - name: auth file
+     replace: path=/etc/httpd/conf/httpd.conf regexp='AllowOverride None' replace='AllowOverride AuthConfig'
+     notify: restart httpd
+   - name: download
+     get_url: url=http://192.168.100.101/yumrepo/htaccess dest=/var/www/html/.htaccess
+     notify: restart httpd
+   - name: download
+     get_url: url=http://192.168.100.101/yumrepo/htpasswd dest=/etc/httpd/.htpasswd owner=apache mode=0660
+     notify: restart httpd
+
+  handlers:
+   - name: restart httpd
+     service: name=httpd state=restarted enabled=true

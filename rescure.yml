@@ -1,0 +1,15 @@
+---
+- hosts: appserver
+  become: true
+  tasks:
+   - name: rec mission
+     block:
+       - name: install
+         yum: name=mo_ssl state=present
+     rescue:
+       - name: install fix
+         yum: name=mod_ssl state=present
+         register: yum_out
+       - debug: msg="rescure success"
+         when: yum_out.rc == 0
+     

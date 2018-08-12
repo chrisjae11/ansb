@@ -1,0 +1,22 @@
+---
+- hosts: appserver
+  become: true
+  tasks:
+   - name: vars
+     include_vars: roles/cmf/ganto.ansible-users/vars/list.yml
+   - name: group
+     group: name="{{item}}" state=present
+     with_items:
+      - "{{user_groups}}"
+   - name: user
+     user: name="{{item}}" state=present group=staff
+     with_items:
+      - "{{staff}}"
+   - name: user2
+     user: name="{{item}}" state=present group=students
+     with_items:
+      - "{{students}}"
+   - name: users3
+     user: name="{{item}}" state=present group=faculty
+     with_items:
+      - "{{faculty}}"

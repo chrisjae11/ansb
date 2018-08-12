@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  remote_user: ansible
+  tasks:
+   - name: install
+     yum: name=httpd state=present
+   - name: config
+     copy: content='hello from {{inventory_hostname}}\n' dest=/var/www/html/index.html
+   - name: svc
+     service: name=httpd state=started enabled=true

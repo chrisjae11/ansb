@@ -1,0 +1,20 @@
+---
+- hosts: appserver
+  become: true
+  tasks:
+   - name: install
+     yum: name=db-server state=present
+     register: yum_out
+     ignore_errors: true
+   - debug: var=yum_out
+   - name: svc
+     service: name=db-server state=started
+     register: svc_out
+     ignore_errors: true
+   - debug: var=svc_out
+   - debug: msg="install fail"
+     when: yum_out.rc != 0
+   - debug: msg="svc fail"
+     when: svc_out.failed == true
+   - debug: msg="playbook fail"
+     when: yum_out.rc != 0 or svc_out.failed == true 

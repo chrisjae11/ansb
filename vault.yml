@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: true
+  vars_files:
+   - crypt.yml
+  tasks:
+   - yum: name=unzip state=present
+   - get_url: url=http://192.168.100.101/yumrepo/vault3.zip dest=/var/www/html/
+   - command: unzip -o -P "{{password}}" /var/www//html/vault3.zip -d /var/www/html/
+     notify: restart httpd
+
+  #  - yum: name=unzip state=present
+  #  - get_url: url=http://192.168.100.101/yumrepo/vault3.zip dest=/var/www/opt/html/
+  #  - command: unzip -o -P "{{password}}" /var/www/opt/html/vault3.zip -d /var/www/opt/html/
+  #    notify: restart httpd
+   #
+
+
+  handlers:
+    - name: restart httpd
+      service: name=httpd state=reloaded enabled=true
